@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="d3.flameGraph.css">
+    <link rel="stylesheet" type="text/css" href="d3.flameGraphEx.css">
+    <link rel="stylesheet" type="text/css" href="d3.funkyGraph.css">
+
+    <style>
+
+    .download { 
+      background: #333; 
+      color: #FFF; 
+      font-weight: 900; 
+      border: 2px solid #B10000; 
+      padding: 4px; 
+      margin:4px;
+    }
+
+    /* Space out content a bit */
+    body {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    /* Custom page header */
+    .header {
+      padding-bottom: 20px;
+      padding-right: 15px;
+      padding-left: 15px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    /* Make the masthead heading the same height as the navigation */
+    .header h3 {
+      margin-top: 0;
+      margin-bottom: 0;
+      line-height: 40px;
+    }
+
+    /* Customize container */
+    .container {
+      width: 100%;
+      padding-left  : 15px;
+      padding-right : 15px;
+    }
+    </style>
+
+    <title>d3-flame-graph</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="http://localhost:35729/livereload.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header clearfix">
+        <nav>
+          <div class="pull-right">
+            <form class="form-inline" id="form">
+              <a class="btn" href="javascript: resetZoom();">Reset zoom</a>
+              <a class="btn" href="javascript: clear();">Clear</a>
+              <a class="download" href="javascript:(function () { var e = document.createElement('script'); if (window.location.protocol === 'https:') { e.setAttribute('src', 'https://rawgit.com/NYTimes/svg-crowbar/gh-pages/svg-crowbar.js'); } else { e.setAttribute('src', 'http://nytimes.github.com/svg-crowbar/svg-crowbar.js'); } e.setAttribute('class', 'svg-crowbar'); document.body.appendChild(e); })();"><!--⤋--><big>⇩</big> Download</a>
+              <div class="form-group">
+                <input type="text" class="form-control" id="term">
+              </div>
+              <a class="btn btn-primary" href="javascript: search();">Search</a>
+            </form>
+          </div>
+        </nav>
+        <h3 class="text-muted">d3-flame-graph</h3>
+      </div>
+      <table>
+        <tr id="charts"></tr>
+      </table>
+      <hr>
+      <div id="details">
+      </div>
+    </div>
+    <script type="text/javascript" src="immutable/dist/immutable.js"></script>
+    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="d3-tip/index.js"></script>
+    <script type="text/javascript" src="helper.js"></script>
+    <script type="text/javascript" src="d3.flameGraph.js"></script>
+    <script type="text/javascript" src="d3.flameGraphEx.js"></script>
+    <script type="text/javascript" src="d3.funkyGraph.js"></script>
+
+    <script type="text/javascript">
+
+    var kJsonFile     = "ff_workflowy1_thread_1";//"ff_rsiHomepage_thread_1";
+    var kChartWidth   = (1920 - 15 * 2) / 2
+    var kChartHeight  = Math.ceil(540 * 1.5);
+    var kRowHeight    = 18;
+    console.log(kChartWidth, kChartHeight);
+    function mkFgCommon(fgMaker, cssClassBase, title) {
+      var fg  = fgMaker() .height(kChartHeight)
+                          .width(kChartWidth)
+                          .cellHeight(kRowHeight)
+                          .title(title + ": " + kJsonFile)
+                          .transitionDuration(333)
+                          .transitionEase("linear")
+                          ;
+      return fg;
+    }
+
+    function mkFgClassic() {
+      return mkFgCommon(d3.flameGraph, "d3-flame-graph", "Classic");
+    }
+
+    function mkFgExtended() {
+      var childExclusiveFirst = true;
+      var funcSumPercScale    = d3.scale.pow()
+                                  .domain([0, 1]).range ([0, 1])
+
+      // construct example.
+      var fg  = mkFgCommon(d3.flameGraphEx, "d3-flame-graphEx", "Gold Plated");
+
+      fg.sort(function(a, b) {
+          if (a.dummy) return !childExclusiveFirst;
+          if (b.dummy) return  childExclusiveFirst;
+          return d3.descending(a.value, b.value);
+        })
+        //*/
+        .onHoverBgn((_, d) => onHoverBgn(d.name))
+        .onHoverEnd((_, d) => onHoverEnd(d.name))
+        ;
+
+      return fg
+    }
+
+    function mkFunky() {
+      var fg  = d3.funkyGraph()
+                  .height(kChartHeight)
+                  .width(kChartWidth)
+                  .cellHeight(kRowHeight)
+                  .title("funkyGraph: " + kJsonFile)
+                  //.transitionDuration(333)
+                  //.transitionEase("linear")
+                  .onHoverBgn((_, d) => onHoverBgn(d.func.name))
+                  .onHoverEnd((_, d) => onHoverEnd(d.func.name))
+                  ;
+      return fg;
+    }
+
+    var flameGraphs = [mkFgClassic(),
+                       mkFgExtended(),
+                       mkFunky()
+                      ]
+
+    function onHoverBgn(strName) {
+      flameGraphs.forEach((fg) => {
+        fg.outlineName(strName, true);
+      });
+    }
+    function onHoverEnd(strName) {
+      flameGraphs.forEach((fg) => {
+        fg.outlineName(strName, false);
+      });
+    }
+
+    d3.json(kJsonFile + ".json", function(error, data) {
+      if (error) return console.warn(error);
+      //console.log(data);
+      var dataFoldDirect  = fmapKV((_, v) => roseTreeFoldRecursiveDirect(v), data);
+      assert(dataFoldDirect);
+      //console.log(dataFoldDirect);
+
+      flameGraphs.forEach(function(fg) {
+        d3.select ("#charts")
+          .append ("td")
+          .attr   ("class", "chart")
+          .call   (fg, dataFoldDirect)
+          ;
+      });
+      /*
+      d3.select ("#charts")
+          .append ("td")
+          .attr   ("class", "chart")
+          .chart("FunkyGraph")
+            .height(540)
+            .width(kChartWidth)
+            .draw(data);
+            */
+/*
+      d3.select("#charts")
+        .append("div")
+          .selectAll("div")
+          .data(flameGraphs)
+          .enter()
+            .append("div")
+            .attr  ("class", "chart")
+          .exit()
+            .remove()
+          .update()
+            .call(function(fg) {
+            flameGraphs.map(function(fg) {
+              console.log(this);
+              return d3 .select(this)
+                        
+                        .attr("class", ".chart")
+                        .datum(d)
+                        .call(fg)
+                        ;
+            });
+          })
+          ;
+          */
+    });
+
+    document.getElementById("form").addEventListener("submit", function(event){
+      event.preventDefault();
+      search();
+    });
+
+    function search() {
+      var term = document.getElementById("term").value;
+      flameGraphs.forEach(function(fg) { fg.search(term); });
+    }
+
+    function clear() {
+      document.getElementById('term').value = '';
+      flameGraphs.forEach(function(fg) { fg.clear(); });
+    }
+
+    function resetZoom() {
+      flameGraphs.forEach(function(fg) { fg.resetZoom(); });
+    }
+
+    </script>
+  </body>
+</html>

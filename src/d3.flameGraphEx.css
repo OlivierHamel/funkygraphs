@@ -1,0 +1,107 @@
+.d3-flame-graphEx rect {
+  stroke: rgba(0, 0, 0, 1);
+  fill-opacity: 1;
+  stroke-width: 0.5;
+}
+
+.d3-flame-graphEx rect:hover {
+  stroke: #474747;
+  stroke-width: 0.5;
+  cursor: pointer;
+}
+
+.d3-flame-graphEx .outline rect {
+  stroke: rgba(255, 0, 255, 1);
+  stroke-width: 4px;
+}
+
+.d3-flame-graphEx .outline .label {
+  font-weight: 800;
+}
+
+.partitionEx {
+  background-color: rgba(0, 0, 0, 1);
+}
+
+.d3-flame-graphEx .label {
+  pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 12px;
+  font-family: Verdana;
+  margin-left: 4px;
+  margin-right: 4px;
+  line-height: 1.5;
+  padding: 0 0 0;
+  font-weight: 400;
+  color: black;
+  text-align: left;
+}
+
+.d3-flame-graphEx .fade {
+  opacity: 0.6 !important;
+}
+
+.d3-flame-graphEx .title {
+  color: #000;
+  font-size: 20px;
+  font-family: Verdana;
+}
+
+.d3-flame-graphEx-tip {
+  /*line-height: 1;*/
+  font-family: Consolas;
+  font-size: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #000;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-flame-graphEx-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.8);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Northward tooltips */
+.d3-flame-graphEx-tip.n:after {
+  content: "\25BC";
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+  text-align: center;
+}
+
+/* Eastward tooltips */
+.d3-flame-graphEx-tip.e:after {
+  content: "\25C0";
+  margin: -4px 0 0 0;
+  top: 50%;
+  left: -8px;
+}
+
+/* Southward tooltips */
+.d3-flame-graphEx-tip.s:after {
+  content: "\25B2";
+  margin: 0 0 1px 0;
+  top: -8px;
+  left: 0;
+  text-align: center;
+}
+
+/* Westward tooltips */
+.d3-flame-graphEx-tip.w:after {
+  content: "\25B6";
+  margin: -4px 0 0 -1px;
+  top: 50%;
+  left: 100%;
+}

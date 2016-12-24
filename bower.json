@@ -1,0 +1,32 @@
+{
+  "name": "d3-funky-graph",
+  "version": "0.0.1",
+  "homepage": "https://github.com/OlivierHamel/funkygraphs",
+  "authors": [ "Olivier Hamel" ],
+  "description": "A d3.js library to produce flame-graphs and funky-graphs.",
+  "main": "src/d3.flame.js",
+  "keywords": [
+    "flame",
+    "graph",
+    "flamegraph",
+    "performance",
+    "d3",
+    "d3js"
+  ],
+  "license": "BSD3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.5.5",
+    "d3-tip": "0.6.7",
+    "immutable": "3.7.5"
+  },
+  "devDependencies": {
+    "livereload-js": "~2.2.1"
+  }
+}
