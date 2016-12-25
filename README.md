@@ -1,4 +1,5 @@
 # funkygraphs
+[![Build Status](https://travis-ci.org/OlivierHamel/funkygraphs.svg?branch=master)](https://travis-ci.org/OlivierHamel/funkygraphs)
 (Originally developed late 2015 during my senior undergraduate year for a graduate course on information visualisation.)
 Experiments with refinements of flame-graphs ('gold-plated'), and a complimentary variant ('funky') for visualising per-symbol information (aka per-function). This implementation was derived from [Martin Spier's d3-flame-graphs](https://github.com/spiermar/d3-flame-graph).
 
