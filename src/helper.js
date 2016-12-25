@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+/*jshint laxcomma: true */
 'use strict';
 
 function assert(condition, message)
@@ -17,7 +19,7 @@ function curry(fx) {
       return function f2() {
         var args2 = Array.prototype.slice.call(arguments, 0);
         return f1.apply(null, args.concat(args2)); 
-      }
+      };
     }
   };
 }
@@ -37,7 +39,7 @@ function toArray(o) {
 function emptyObj(o) {
   assert(o);
   if (Array.isArray(o))
-    return o.length == 0;
+    return o.length === 0;
 
   for (var k in o) {
     if (o.hasOwnProperty(k))
@@ -55,7 +57,7 @@ function pairsKV(f, m) {
   assert(m);
   for (var k in m) {
     if (m.hasOwnProperty(k))
-      f(k, m[k])
+      f(k, m[k]);
   }
 }
 
@@ -76,17 +78,17 @@ function fmapKV(f, m) {
     return m2;
   }
 
-  var m2 = {};
+  var m3 = {};
   pairsKV((k, v) => {
-    m2[k] = f(k, v);
-    if (m2[k] === undefined)
-      delete m2[k];
+    m3[k] = f(k, v);
+    if (m3[k] === undefined)
+      delete m3[k];
   }, m);
-  return m2;
+  return m3;
 }
 
 function foldFlatten(fnFolder) {
-  var l = []
+  var l = [];
   fnFolder((v) => l.push(v));
   return l;
 }
@@ -199,7 +201,7 @@ function deriveFmapDeepPre(fnClone, fmapKids) {
     }
 
     return fmapMut(fnClone(r));
-  }
+  };
 }
 
 function deriveFmapDeepPost(fnClone, fmapKids) {
@@ -212,7 +214,7 @@ function deriveFmapDeepPost(fnClone, fmapKids) {
     }
 
     return fmapMut(fnClone(r));
-  }
+  };
 }
 
 var roseTreeFoldr         = deriveFoldr
@@ -264,9 +266,9 @@ function nameTrimModuleAndExtra(name) {
 }
 
 function decimalisePercent(a, total, decimals) {
-  if (total == 0) { a = 1; total = 1; }
+  if (total === 0) { a = 1; total = 1; }
 
-  return Math.round((a / total) * Math.pow(10, 2+decimals)) / Math.pow(10, decimals)
+  return Math.round((a / total) * Math.pow(10, 2+decimals)) / Math.pow(10, decimals);
 }
 
 function escapeHtml(s) {
@@ -349,7 +351,7 @@ function roseTreeFoldRecursiveFull(r) {
 
 function roseTreeTrim(r) {
   return roseTreeFmapDeepPost((t) => {
-    var trim = emptyObj(t.children) && (t.value == 0);
+    var trim = emptyObj(t.children) && (t.value === 0);
     //if (trim) console.log("trim:", t);
     return trim ? undefined : t;
   }, r);
@@ -382,7 +384,7 @@ function mkProperty(self, defVal, opt_fnOnChange) {
       opt_fnOnChange.call(self, _);
 
     return self;
-  }
+  };
 }
 
 function displayName(s) {
@@ -392,7 +394,7 @@ function displayName(s) {
 function tooltipHtml(strName, nFrame, nFunc, nTotal) {
   return "name:  " + escapeHtml(strName) +
      "<br>frame: " + nFrame + " (" + decimalisePercent(nFrame , nFunc , 2) + "% of function weight)" +
-     "<br>total: " + nFunc  + " (" + decimalisePercent(nFunc  , nTotal, 2) + "% of total weight)"
+     "<br>total: " + nFunc  + " (" + decimalisePercent(nFunc  , nTotal, 2) + "% of total weight)";
 }
 
 /*

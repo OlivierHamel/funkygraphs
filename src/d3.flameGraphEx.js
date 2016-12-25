@@ -1,3 +1,6 @@
+/*jshint esversion: 6 */
+/*jshint laxcomma: true */
+
 (function() {
   'use strict';
 
@@ -248,7 +251,7 @@
         var svg       = d3.select(this).select("svg")
           , widthCalc = function(d) { return d.dx * kx; }
           , g         = svg.selectAll("g")
-                            .data(nodes.filter(function(d) { return widthCalc(d) > 0.1; }))
+                            .data(nodes.filter(function(d) { return widthCalc(d) > 0.1; }));
         //console.log("update: ", data, selection, this, nodes);
         g//*
           .transition()
@@ -470,7 +473,7 @@
       if (!arguments.length) { return onZoom; }
       onZoom = _;
       return chart;
-    }
+    };
 
     chart.zoomTo = function(d) {
       zoom(chart, d);
@@ -491,7 +494,7 @@
              )
         ;
       return chart;
-    }
+    };
 
     chart.onHoverBgn  = prop(null);
     chart.onHoverEnd  = prop(null);

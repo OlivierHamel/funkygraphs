@@ -1,3 +1,6 @@
+/*jshint esversion: 6 */
+/*jshint laxcomma: true */
+
 (function() {
   'use strict';
 
@@ -181,7 +184,7 @@
         var weightKids    = foldKV((s, _, v) => s + v.value, 0, mapKidFrames);
         var weightExcl    = foldKV((s, _, v) => s + v.value, 0, allRawFrames);
         var weightTotal   = weightKids + weightExcl;
-        if (weightTotal == 0) return undefined;
+        if (weightTotal === 0) return undefined;
 
         //console.log(rawFrame.name, weightExcl, weightKids, weightTotal);
         assert(rawFrame);
@@ -239,9 +242,10 @@
           if (!p                ) return false;
           if (p.name === f.name ) return true;
           return go(p);
-        };
+        }
+        
         return go(f);
-      };
+      }
 
       // :: Map String FuncBiTree
       return fmapKV((strName, rawFrames) => {
@@ -299,7 +303,7 @@
         //console.log(a.func.name < b.func.name);
         return d3.ascending(a.func.name, b.func.name);
       };
-    var mapFuncBiTree   = filterKV((_, v) => v.func.value == 0, pair[0]);
+    var mapFuncBiTree   = filterKV((_, v) => v.func.value === 0, pair[0]);
     var totalWeight     = pair[1];
     var kHackyWidthMin  = 0.1;
     var global          = { funcs   : mapFuncBiTreeAll
@@ -360,7 +364,7 @@
       assert(nWeightExcl >= 0);
       var subTreeWeight = (v) => v.func.value;
       var aryKidsSorted = toSortedAry(fnSorter(subTreeWeight), kids);
-      var aryPosW2      = fmapKV((k, v) => (k == 0) ? (v + (bAbove ? -nRowHeight : nRowHeight)) : v
+      var aryPosW2      = fmapKV((k, v) => (k === 0) ? (v + (bAbove ? -nRowHeight : nRowHeight)) : v
                                 ,aryPosW);
       var aryPosWKids   = calcPosW(aryPosW2, nWeightExcl
                                   ,fmapKV((_, v) => subTreeWeight(v), aryKidsSorted));
@@ -392,7 +396,7 @@
       var biTrees     = toSortedAry(fnSorter((v) => v.func.value), mapFuncBiTree); //:: [FuncBiTree]
       var bLone       = (biTrees.length == 1);
       var posY        = Math.round(bLone  ? nHeight - nRowHeight * (2 + calledByDepth(biTrees[0].calledBy))
-                                          : ((nHeight - nRowHeight) / 2))
+                                          : ((nHeight - nRowHeight) / 2));
       var biTreePosW  = calcPosW([posY, 0, nWidth], 0
                                 ,fmapKV((_, v) => rootWeight(v), biTrees));
 
@@ -603,7 +607,7 @@
                                : "d3-funky-graph")
         ;
       return chart;
-    }
+    };
 
     chart.onHoverBgn  = prop(null);
     chart.onHoverEnd  = prop(null);
